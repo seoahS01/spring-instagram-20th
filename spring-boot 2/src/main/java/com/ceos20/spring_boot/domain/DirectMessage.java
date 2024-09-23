@@ -4,37 +4,32 @@ import jakarta.validation.constraints.Size;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "Comment")
-public class Comment {
+@Table(name = "DirectMessage")
+public class DirectMessage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "message_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "sender_id")
+    private User sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment;
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
 
     @NotNull
     @Size(max = 20)
-    @Column(name = "content")
-    private String content;
+    @Column(name = "message")
+    private String message;
 
     @NotNull
     @Column(name = "created_at")
     private Timestamp createdAt;
 
     @NotNull
-    @Column(name = "updated_at")
-    private Timestamp updatedAt;
-
+    @Column(name = "is_read")
+    private Boolean isRead;
 }
