@@ -5,6 +5,7 @@ spring:
     username: root
     password: Mseoah0325!
   jpa:
+    show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
