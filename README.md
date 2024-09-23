@@ -3,6 +3,8 @@ CEOS 20th BE study - instagram clone coding
 
 ### DB 모델링
 
+<img width="973" alt="스크린샷 2024-09-23 오전 10 00 41" src="https://github.com/user-attachments/assets/16eb74ea-0603-469f-adc4-9f8fc935a89d">
+
 - User는 Post, Comment, Like, DirectMessage와 각각 1:1 관계를 가짐
 - Post와 Comment, Like는 게시글을 중심으로 관계가 형성됨
 
