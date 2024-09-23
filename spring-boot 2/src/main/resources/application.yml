@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/mydatabase   # 예: jdbc:mysql://localhost:3306/mydb
+    username: [DB_USER]  # 예: root
+    password: [DB_PASSWORD]  # 예: rootpassword
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update  # update, create, create-drop 중 하나 선택
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        show_sql: true  # SQL 로그를 콘솔에 출력
+        format_sql: true  # SQL을 포맷된 형식으로 출력
