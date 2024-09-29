@@ -2,8 +2,9 @@ package com.ceos20.spring_boot.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
+
 
 @Entity
 @Getter

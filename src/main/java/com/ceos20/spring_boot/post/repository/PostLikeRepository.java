@@ -5,5 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class PostLikeRepository {
+public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
+
+    // 특정 게시물에 대한 좋아요 수를 계산하는 메서드
+    Long countByPostId(Long postId);
 }

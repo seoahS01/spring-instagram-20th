@@ -5,5 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CommentRespository {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
+
+    // 특정 게시글에 달린 댓글 수 조회
+    Long countByPostId(Long postId);
+
 }
