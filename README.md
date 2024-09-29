@@ -1,8 +1,6 @@
 # spring-instagram-20th
 CEOS 20th BE study - instagram clone coding
 
-# 🌳 인스타그램 DB 모델링
-
 ## 🪴 데이터 모델링 개념 공부
 
 ### 🌱 데이터 모델링
@@ -257,87 +255,300 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 ### 🌱 기능 분석
 
-**User**
+**User & Follow**
 
 ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6c78981f-beff-49cc-af2f-6942efc82382/image.png)
 
-- 이름
-- 아이디(PK)
-- 비밀번호
-- 성별
-- 프로필 이미지
-- 업로드한 게시물 수
-- 팔로워 수
-- 팔로잉 수
-- 생일 → 만 14세 이상
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/465f4fd0-21ed-48e9-999f-992d845dfe23/image.png)
 
-**Follow**
+[ 기능분석 ]
 
-- 팔로우 식별번호
-- 친한 친구 여부
-- 팔로워 아이디
-- 팔로잉 아이디
+- 생일을 기준으로 만 14세 이상만 가입할 수 있다
 
-**Post**
+[ 관계분석 ]
 
-- 게시글 식별번호
-- 본문
-- 생성일
-- 회원 아이디
-- 좋아요 수
-- 댓글 수
+- 한 명의 회원은 아무도 팔로우하지 않거나, 여러 명을 팔로우할 수 있다 (1:N)
+- 한 명의 회원은 게시물을 아무것도 올리지 않거나 여러 개를 올릴 수 있다 (1:N)
 
-**Scrap**
+**Post & Post Image & Post Like & Scrap**
 
-- 스크랩 식별번호
-- 게시글 아이디
-- 회원 아이디
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/2168f18c-90c1-4d13-a34e-a0192696e922/image.png)
 
-**Post Image**
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6877a071-b126-4dd9-aa51-7f2f67eb6d7b/image.png)
 
-- 이미지 식별번호
-- 파일경로
-- 게시글 아이디
+[ 기능분석 ]
 
-**Post Like**
+- 이미지와 본문, 생성일
+- 게시물에는 여러 장의 사진을 올릴 수 있다
 
-- 좋아요 식별번호
-- 회원 아이디
-- 게시글 아이디
+[ 관계분석 ]
 
-**Comment**
+- 한 명의 회원은 여러 게시물을 스크랩할 수 있고, 한 개의 게시물은 여러 회원에게 스크랩될 수 있다 (M:N)
+- 한 명의 회원은 여러개의 게시물에 좋아요를 누를 수 있고, 하나의 게시물에는 여러 명이 좋아요를 누를 수 있다 (M:N)
 
-- 댓글 식별번호
-- 내용
-- 작성일
-- 회원 아이디
-- 게시글 아이디
-- 부모 댓글 아이디
-- 좋아요 수
-- 대댓글의 수는 부모 아이디가 null이 아닐 때 부모 아이디에 딸린 댓글 수로 계산 → 미리 계산해놓기 카운팅해서 따로 쿼리 만들지 않을 수 있도록
+**Comment & Comment Like**
 
-**Comment Like**
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/ef4c289e-9443-4598-8b89-05d2ad850006/image.png)
 
-- 댓글 좋아요 식별자
-- 댓글 아이디
-- 회원 아이디
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/974036da-acb4-4495-897b-44da13c3a7ef/image.png)
 
-**DM**
+[ 기능분석 ]
 
-- DM 식별자
-- 내용
-- 전송일
-- 읽음 여부
-- 공감
-- 보낸 사용자
-- 받는 사용자
-- 부모 DM 아이디
-- DM방 아이디
-- DM 이미지의 경우, url 한 줄로 만들 수 있어서 따로 엔티티를 만들지 않음
+- 댓글을 게시글에 달린다
+- 댓글에는 대댓글이 달릴 수 있다
+- 대댓글의 수가 표시된다
+    
+    → 부모 id가 null이 아닐 때 부모 id에 딸린 댓글 수로 계산
+    
 
-**DM Room**
+[ 관계분석 ]
 
-- DM방 식별자
-- 안 읽은 채팅 수
-- 회원 아이디1
-- 회원 아이디2
+- 한 명의 회원은 여러 개의 댓글을 달 수 있다(1:N)
+- 하나의 댓글에는 여러 명이 좋아요를 누를 수 있고 한 명의 회원은 여러 개의 댓글에 좋아요를 누를 수 있다(M:N)
+- 하나의 게시글에는 여러 개의 댓글이 달릴 수 있다(1:N)
+
+**DM & DM Room**
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/28fd345b-58ac-485b-8768-65cf8162b96a/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/053a8561-a466-42b0-992e-8006b21c947b/image.png)
+
+[ 기능분석 ]
+
+- 1:1 채팅방
+- 보냈던 DM을 언급해 답장할 수 있다
+- DM 방에서 주고 받는 이미지의 경우, url 한 줄로 만들 수 있기 때문에 따로 엔티티를 만들지 않는다
+
+[ 관계분석 ]
+
+- DM 답장을 위해서는 하나의 DM만 언급이 가능하다 (1:1)
+- 하나의 DM방에는 여러 개의 DM이 있다(1:N)
+- 한 명의 회원은 여러 개의 DM을 보낼 수 있다 (1:N)
+- 한 명의 회원은 여러 개의 DM 방에 들어갈 수 있고, 하나의 DM방에는 2명의 회원이 들어갈 수 있다 (M:N)
+
+### 🌱 ERD
+
+https://www.erdcloud.com/d/qF45tQoypstpAqQW3
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/dc4cf164-861b-4feb-8b5f-5b6920998dce/image.png)
+
+## 🪴 클래스 생성
+
+엔티티마다 클래스를 생성하고, 필요한 필드 추가
+
+### 🌱 Directory Architecture
+
+*src > main > java > com.ceos20.spring_boot*
+
+🗂️ user
+
+📁 domain
+
+- User.java
+- Follow.java
+
+📁 repository
+
+- UserRepository.java
+- FollowRespoitory.java
+
+🗂️ post
+
+📁 domain
+
+- Post.java
+- PostImage.java
+- PostLike.java
+- Scrap.java
+
+📁 repository
+
+- PostRepository.java
+- PostImageRepository.java
+- PostLikeRepository.java
+- ScrapRepository.java
+
+🗂️ comment
+
+📁 domain
+
+- Comment.java
+- CommentLike.java
+
+📁 repository
+
+- CommentRepository.java
+- CommentLike.java
+
+🗂️ dm
+
+📁 domain
+
+- DM.java
+- DMRoom.java
+
+📁 repository
+
+- DMRepository.java
+- DMRoomRepository.java
+
+### 🌱 필드 구성 예시
+
+```java
+package com.ceos20.spring_boot.comment.domain;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.sql.Timestamp;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)@AllArgsConstructor
+@Builder
+public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "comment_id")
+    private Long commentId;
+
+    @Column(name = "comment_content", nullable = false, length = 200)
+    private String commentContent;
+
+    @Column(name = "created_at", nullable = false)
+    private Timestamp createdAt;
+
+    @Column(name = "post_id", nullable = false)
+    private Long postId;
+
+    @Column(name = "like_num", nullable = false)
+    private int likeNum;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_comment_id")
+    private Comment parentComment;
+
+    @Column(name = "post_id2")
+    private Long postId2;
+
+}
+
+```
+
+**Entity 클래스 생성 시**
+
+- `@Entity`
+    
+    해당 클래스가 JPA 엔티티임을 나타냄
+    
+    데이터베이스 테이블과 매핑하고 관리하는 클래스로 지정
+    
+- `@Getter` `@Setter`
+    
+    lombok을 사용해 자동으로 getter와 setter 메서드 생성
+    
+- `@NoArgsConstructor(access = AccessLevel.PROTECTED)`
+    
+    기본 생성자에 대한 접근 제어를 제한할 수 있음
+    
+    즉, 외부에서 기본 생성자를 직접 호출하지 못하도록 제한하고, 같은 패키지 내에서나 하위 클래스에서만 생성자를 사용할 수 있게 함
+    
+- `@AllArgsConstructor`
+    
+    클래스에 존재하는 모든 필드에 대해 생성자를 자동으로 만들어줌
+    
+- `@Builder`
+    
+    빌더 패턴을 자동으로 생성해줌
+    
+    선택적으로 필드를 설정할 수 있다는 장점
+    
+- `@Table(name = "따로 지정할 테이블명")`
+    
+    엔티티와 매핑되는 테이블 이름 지정
+    
+    지정 안 하면 클래스 이름이 기본값으로 사용됨
+    
+
+**Primary Key 속성**
+
+권장하는 식별자 전략: `Long형 + 대체키 + 키 생성전략`
+
+- `@Id`
+    
+    테이블의 기본 키와 객체의 필드 매핑
+    
+- `@GeneratedValue(strategy = GenerationType.IDENTITY)`
+    
+    `@Id` 만 사용할 경우 기본 키 값을 직접 할당해줘야 하는데, 기본 키를 직접 할당하는 대신 데이터베이스에서 생성해주는 값 사용
+    
+- `@Column(name = "comment_id")`
+    
+    따로 지정할 속성명
+    
+
+**Foreign Key 속성과 연관 관계**
+
+- 연간관계 `@OneToMany`   `@ManyToOne`   `@OneToOne`   `@ManyToMany`
+- `@JoinColumn(name = "조인속성")`
+- 로딩
+    - 즉시 로딩
+        
+        `@XToOne(OneToOne, ManyToOne) 관계`는 디폴트 값이 즉시 로딩이므로 직접 지연 로딩으로 설정해야 함
+        
+    - 지연 로딩
+        
+        `@XToMany`는 기본이 LAZY
+        
+        지연 로딩이 트랜잭션 밖에서 안 되는 등의 이슈가 있지만 다른 대안 사용
+        
+
+**일반 속성**
+
+- `@Column(name = "연결할 column 명", nullable = false)`
+
+**Enum 타입**
+
+<aside>
+🤔
+
+**Enum 타입**
+
+열거형을 표현하는 데이터 타입. 고정된 상수 집합을 정의할 때 사용
+
+미리 정해진 몇 가지 값만 가질 수 있는 변수를 만들고 싶을 때 사용
+
+```java
+public enum Season {
+    SPRING, SUMMER, FALL, WINTER
+}
+
+Season currentSeason = Season.SPRING;
+```
+
+</aside>
+
+- `@Enumerated(EnumType.String)`
+    
+    Enum의 값 자체(문자열)을 저장하도록 할 수 있음
+    
+- `EnumType.ORDINAL`
+    
+    Enum 값의 순서(index. 0부터 시작)을 데베에 저장
+    
+
+<aside>
+⚠️
+
+`EnumType.ORDINAL` 사용 시 **Enum 값이 추가되거나 순서가 바뀔 때 문제가 발생할 수 있음**
+
+새로운 Enum 값이 중간에 추가되면 기존에 저장된 값들과 순서가 맞지 않게 돼서 데이터 무결성을 헤칠 수 있음
+
+→ `EnumType.STRING` 사용 권장
+
+</aside>
