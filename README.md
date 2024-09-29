@@ -18,7 +18,7 @@ CEOS 20th BE study - instagram clone coding
     
     e.g. 피터 첸 표기법으로 ERD 다이어그램 구성
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/80033519-4805-48b5-98d0-15c8ba1e9ad2/image.png)
+    ![image.png]([https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/80033519-4805-48b5-98d0-15c8ba1e9ad2/image.png](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Fd6cd7a95-d578-4984-bc27-c7e8cb6ebb02%2F80033519-4805-48b5-98d0-15c8ba1e9ad2%2Fimage.png?table=block&id=10f7bcff-55bd-80c1-b27b-cdfb8802e075&spaceId=d6cd7a95-d578-4984-bc27-c7e8cb6ebb02&width=1480&userId=8c1917df-fd4f-4ec4-b15c-166d0fd2dff8&cache=v2))
     
     ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/1f9de6d4-5bcb-4f8f-b058-ab2c24b25167/image.png)
     
