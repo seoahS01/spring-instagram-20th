@@ -28,7 +28,8 @@ CEOS 20th BE study - instagram clone coding
     
     데이터 타입 명시, 데이터 간의 관계 정립, 테이블의 키 지정
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6a5059ce-f385-4569-a065-49bc8589e896/image.png)
+    ![image](https://github.com/user-attachments/assets/3fba406d-83fe-46ba-96ec-c6f7d2cea23b)
+
     
 4. 물리적 데이터 모델링
     
@@ -36,59 +37,57 @@ CEOS 20th BE study - instagram clone coding
     
     즉, 만든 시각적인 구조를 실제 SQL 코딩을 통해 완성하는 단계
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/14b4ff5f-106a-4005-8f7a-f32f1c3b018c/image.png)
+    ![image](https://github.com/user-attachments/assets/bd606919-aeff-4a60-9477-297fc7d645e4)
+
+  ```java
+    /* 테이블 생성 */
     
-    - 코드
-        
-        ```java
-        /* 테이블 생성 */
-        
-        -- 회원정보
-        create table member_tbl ( 
-          member_uid bigint primary key auto_increment,
-          member_name varchar(45) unique not null,
-          member_pwd varchar(45) not null,
-          member_status boolean not null
-        );
-        
-        -- 로그인기록정보
-        create table login_info_tbl( 
-          member_name varchar(45) not null,
-          info_ip varchar(45) not null,
-          info_date datetime not null,
-          constraint fk_member_name foreign key (member_name) references member_tbl (member_name)
-        );
-        
-        -- 게시판
-        create table board_tbl ( 
-          board_uid bigint primary key auto_increment,
-          member_name varchar(45) not null,
-          board_title varchar(45) not null,
-          board_date datetime not null,
-          board_hit int not null,
-          board_post varchar(5000) not null,
-          constraint fk_member_name foreign key(member_name) references member_tbl(member_name)
-        );
-        
-        -- 게시판 풀텍스트 인덱스 생성
-        create Fulltext index idx_title on board_tbl ( board_title );
-        create Fulltext index idx_post on board_tbl ( board_post );
-        -- show index from board_tbl ;
-        
-        -- 댓글
-        create table reply_tbl ( 
-          reply_uid bigint primary key auto_increment,
-          board_uid bigint not null,
-          member_name varchar(45) not null,
-          reply_date datetime not null,
-          reply_post varchar(1000) not null,
-          foreign key(board_uid) references board_tbl(board_uid),
-          foreign key(member_name) references member_tbl(member_name)
-        );
-        
-        -- 댓글 풀텍스트 인덱스 생성
-        create Fulltext index idx_reply on reply_tbl ( reply_post );
-        ```
+    -- 회원정보
+    create table member_tbl ( 
+      member_uid bigint primary key auto_increment,
+      member_name varchar(45) unique not null,
+      member_pwd varchar(45) not null,
+      member_status boolean not null
+    );
+    
+    -- 로그인기록정보
+    create table login_info_tbl( 
+      member_name varchar(45) not null,
+      info_ip varchar(45) not null,
+      info_date datetime not null,
+      constraint fk_member_name foreign key (member_name) references member_tbl (member_name)
+    );
+    
+    -- 게시판
+    create table board_tbl ( 
+      board_uid bigint primary key auto_increment,
+      member_name varchar(45) not null,
+      board_title varchar(45) not null,
+      board_date datetime not null,
+      board_hit int not null,
+      board_post varchar(5000) not null,
+      constraint fk_member_name foreign key(member_name) references member_tbl(member_name)
+    );
+    
+    -- 게시판 풀텍스트 인덱스 생성
+    create Fulltext index idx_title on board_tbl ( board_title );
+    create Fulltext index idx_post on board_tbl ( board_post );
+    -- show index from board_tbl ;
+    
+    -- 댓글
+    create table reply_tbl ( 
+      reply_uid bigint primary key auto_increment,
+      board_uid bigint not null,
+      member_name varchar(45) not null,
+      reply_date datetime not null,
+      reply_post varchar(1000) not null,
+      foreign key(board_uid) references board_tbl(board_uid),
+      foreign key(member_name) references member_tbl(member_name)
+    );
+    
+    -- 댓글 풀텍스트 인덱스 생성
+    create Fulltext index idx_reply on reply_tbl ( reply_post );
+  ```
         
     
 
@@ -145,13 +144,15 @@ N 혹은 NN으로 표기
 
 - 자식이 부모의 PK를 FK로 참조해서 자신의 PK로 설정
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6fd39ae0-2568-4550-a69d-d8279271a322/image.png)
+![image](https://github.com/user-attachments/assets/bb26d8b1-526e-49cc-8b9f-ac0f9914da63)
+
 
 **비식별자 관계**
 
 - 부모의 PK를 FK로 참조해서 일반 속성으로 사용
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/7636b525-6f9a-43b2-b411-8848ea564b65/image.png)
+![image](https://github.com/user-attachments/assets/5c47339a-9966-4f81-9ee3-5245fae07675)
+
 
 ### 🌱 ERD 관계의 카디널리티
 
@@ -161,13 +162,15 @@ N 혹은 NN으로 표기
 
 e.g. 학생과 신체 정보 → 한 명의 학생은 하나의 신체 정보만 갖기 때문에
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/299dd0e5-8273-4472-a32c-f50628b0f0b1/image.png)
+![image](https://github.com/user-attachments/assets/fb08619b-7ae9-4eb9-a4a7-c708e31d68cd)
+
 
 **One to Many Cardinality (1:N 관계)**
 
 e.g. 한 명의 학생은 여러 개의 취미를 가질 수도 있음
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/f4d472e4-1fc1-4618-8d2f-93cf3fea5927/image.png)
+![image](https://github.com/user-attachments/assets/2a663ea9-2028-410e-9cd3-372a067d7276)
+
 
 **Many to Many Cardinality(M:N 관계)**
 
@@ -175,13 +178,15 @@ e.g. 제품 엔티티 입장에서,TV 제품은 삼성 티비, 애플 티비, lg
 
 제조업체 엔티티 입장에서도 삼성 제조업체는 TV 뿐만 아니라 세탁기, 냉장고 등 여러 제품을 생성할 수 있음
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/29f5d722-f3dd-40ee-9092-bc262ad9faf9/image.png)
+![image](https://github.com/user-attachments/assets/53f10f8f-29e6-4e07-bfd2-75096228c23f)
+
 
 두 엔티티가 M:N 관계에 있는 경우, 두 개의 엔티티만으로는 서로를 표현하는데 부족함 → 1:N, N:1로 조정하는 작업이 필요
 
 이를 위해 중간 엔티티를 만들어 기존 두 엔티티의 공유 속성 역할을 하게 됨
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/d7a4f085-bfeb-40a3-ad9b-7dd05f1d7fc4/image.png)
+![image](https://github.com/user-attachments/assets/73410540-1cb7-402d-a91f-0e8805601cb4)
+
 
 ### 🌱 ERD 관계의 참여도
 
@@ -190,9 +195,11 @@ e.g. 제품 엔티티 입장에서,TV 제품은 삼성 티비, 애플 티비, lg
 - | : 반드시 있어야 하는 개체
 - O : 없어도 되는 개체
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/740ba058-b680-449e-8b34-03216c85d262/image.png)
+![image](https://github.com/user-attachments/assets/f41fdb56-de23-42da-b471-004edf0a3e9c)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/14f3ae4d-5f47-43b0-90c2-224a9ea9300f/image.png)
+
+![image](https://github.com/user-attachments/assets/025140d0-5dd2-4078-af04-1d7fe4e86e56)
+
 
 **관계의 선택 기호**
 
@@ -204,7 +211,8 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 ### 🌱 JOIN
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/fad47d63-1092-429d-a374-fe3be0ac0abc/image.png)
+![image](https://github.com/user-attachments/assets/2c274646-0da2-4b92-9b2e-31b6dc2b3e9b)
+
 
 ## 🪴 ERD Cloud 사용법
 
@@ -216,13 +224,15 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
     - 논리적 이름: 왼쪽. 내가 알아보기 위한 이름
     - 물리적 이름: 오른쪽. 실제 데이터베이스에 저장되는 테이블 이름
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/f64cf84a-9bf3-4781-b750-3a2a33ee7af6/image.png)
+    ![image](https://github.com/user-attachments/assets/fa58e271-1ff9-4c2e-8dea-0ee9cdf11725)
+
     
 2. attribute 추가
     - 노란색 버튼: PK attribute 추가
     - 파란색 버튼: 일반 attribute 추가
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/21e0459a-1622-4a37-af22-b13ee3e2098c/image.png)
+    ![image](https://github.com/user-attachments/assets/0a368aef-1644-4544-a5e6-c86bdfd20f22)
+
     
 
 ### 🌱 노출되는 속성 선택
@@ -232,7 +242,8 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 - Display: 화면에서 보여지는 테이블의 속성을 선택하는 곳
 - share: 다른 사용자와 동시 작업을 할 지 선택
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/55c3d5dc-1008-49d1-b746-63e423055f66/image.png)
+![image](https://github.com/user-attachments/assets/40c508f4-cf22-4ca7-ab81-5781531b32d8)
+
 
 ### 🌱 관계도 그리기
 
@@ -259,9 +270,11 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 **User & Follow**
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6c78981f-beff-49cc-af2f-6942efc82382/image.png)
+![image](https://github.com/user-attachments/assets/d6e62cd4-f437-45ce-80d8-a1da9b5dfc60)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/465f4fd0-21ed-48e9-999f-992d845dfe23/image.png)
+
+![image](https://github.com/user-attachments/assets/c44eae34-9613-489c-96bf-f36caa0ea173)
+
 
 [ 기능분석 ]
 
@@ -274,9 +287,11 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 **Post & Post Image & Post Like & Scrap**
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/2168f18c-90c1-4d13-a34e-a0192696e922/image.png)
+![image](https://github.com/user-attachments/assets/b282863d-33a0-402e-a309-6178bcf5683c)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/6877a071-b126-4dd9-aa51-7f2f67eb6d7b/image.png)
+
+![image](https://github.com/user-attachments/assets/f249369c-6727-4045-9a9b-ef89412ff09e)
+
 
 [ 기능분석 ]
 
@@ -290,9 +305,11 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 **Comment & Comment Like**
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/ef4c289e-9443-4598-8b89-05d2ad850006/image.png)
+![image](https://github.com/user-attachments/assets/c65cce9c-9d45-4831-9fcd-d7a0ff425464)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/974036da-acb4-4495-897b-44da13c3a7ef/image.png)
+
+![image](https://github.com/user-attachments/assets/a98cbbb2-9836-4dc0-a73d-68035af7259c)
+
 
 [ 기능분석 ]
 
@@ -311,9 +328,11 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 **DM & DM Room**
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/28fd345b-58ac-485b-8768-65cf8162b96a/image.png)
+![image](https://github.com/user-attachments/assets/0b685773-59c4-4506-81f0-ceb6cb03ffef)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/053a8561-a466-42b0-992e-8006b21c947b/image.png)
+
+![image](https://github.com/user-attachments/assets/7c69ab9f-597b-40c3-85e2-01f8c408ac4d)
+
 
 [ 기능분석 ]
 
@@ -332,7 +351,8 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 
 https://www.erdcloud.com/d/qF45tQoypstpAqQW3
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/dc4cf164-861b-4feb-8b5f-5b6920998dce/image.png)
+![image](https://github.com/user-attachments/assets/145cb4c6-55ea-4425-9681-363bc7d14c15)
+
 
 ## 🪴 클래스 생성
 
