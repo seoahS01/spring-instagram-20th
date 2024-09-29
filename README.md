@@ -21,7 +21,8 @@ CEOS 20th BE study - instagram clone coding
     ![image](https://github.com/user-attachments/assets/75824021-4bb3-474f-a6ca-88347b2c5831)
 
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/1f9de6d4-5bcb-4f8f-b058-ab2c24b25167/image.png)
+    ![image](https://github.com/user-attachments/assets/d1a4aa73-4100-45c2-8b02-a6b19635152b)
+
     
 3. 논리적 데이터 모델링
     
