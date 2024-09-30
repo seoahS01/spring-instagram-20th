@@ -1,5 +1,6 @@
 package com.ceos20.spring_boot.user.controller;
 
+import com.ceos20.spring_boot.user.DTO.UserProfileDTO;
 import com.ceos20.spring_boot.user.domain.User;
 import com.ceos20.spring_boot.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class UserController {
 
     // 사용자 조회 (GET 요청)
     @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable Long userId) {
-        User user = userService.getUserById(userId);
+    public ResponseEntity<UserProfileDTO> getUserById(@PathVariable Long userId) {
+        UserProfileDTO user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
