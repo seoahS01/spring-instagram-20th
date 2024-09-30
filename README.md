@@ -1526,7 +1526,7 @@ Customer만 즉시로딩 하고 싶을 때
     ```
     
 2. Entity Graph 적용
-    1. EntityManager로 조회
+   a. EntityManager로 조회
         
         ```java
         EntityGraph<?> entityGraph = em.getEntityGraph("Order.withCustomer");
