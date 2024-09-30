@@ -273,12 +273,9 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 ### 🌱 기능 분석
 
 **User & Follow**
-
-![image](https://github.com/user-attachments/assets/d6e62cd4-f437-45ce-80d8-a1da9b5dfc60)
-
-
-![image](https://github.com/user-attachments/assets/c44eae34-9613-489c-96bf-f36caa0ea173)
-
+| 인스타그램 화면       | ERD                                             | 
+|----------------|--------------------------------------------------------|
+| ![image](https://github.com/user-attachments/assets/d6e62cd4-f437-45ce-80d8-a1da9b5dfc60) | ![image](https://github.com/user-attachments/assets/c44eae34-9613-489c-96bf-f36caa0ea173) |
 
 [ 기능분석 ]
 
@@ -290,11 +287,9 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 - 한 명의 회원은 게시물을 아무것도 올리지 않거나 여러 개를 올릴 수 있다 (1:N)
 
 **Post & Post Image & Post Like & Scrap**
-
-![image](https://github.com/user-attachments/assets/b282863d-33a0-402e-a309-6178bcf5683c)
-
-
-![image](https://github.com/user-attachments/assets/f249369c-6727-4045-9a9b-ef89412ff09e)
+| 인스타그램 화면       | ERD                                             | 
+|----------------|--------------------------------------------------------|
+|![image](https://github.com/user-attachments/assets/b282863d-33a0-402e-a309-6178bcf5683c) | ![image](https://github.com/user-attachments/assets/f249369c-6727-4045-9a9b-ef89412ff09e) |
 
 
 [ 기능분석 ]
@@ -308,11 +303,9 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 - 한 명의 회원은 여러개의 게시물에 좋아요를 누를 수 있고, 하나의 게시물에는 여러 명이 좋아요를 누를 수 있다 (M:N)
 
 **Comment & Comment Like**
-
-![image](https://github.com/user-attachments/assets/c65cce9c-9d45-4831-9fcd-d7a0ff425464)
-
-
-![image](https://github.com/user-attachments/assets/a98cbbb2-9836-4dc0-a73d-68035af7259c)
+| 인스타그램 화면       | ERD                                             | 
+|----------------|--------------------------------------------------------|
+| ![image](https://github.com/user-attachments/assets/c65cce9c-9d45-4831-9fcd-d7a0ff425464) | ![image](https://github.com/user-attachments/assets/a98cbbb2-9836-4dc0-a73d-68035af7259c) |
 
 
 [ 기능분석 ]
@@ -331,11 +324,9 @@ e.g. 학법 21003 학생의 취미가 낚시라는 정보가 있다면, 21003 �
 - 하나의 게시글에는 여러 개의 댓글이 달릴 수 있다(1:N)
 
 **DM & DM Room**
-
-![image](https://github.com/user-attachments/assets/0b685773-59c4-4506-81f0-ceb6cb03ffef)
-
-
-![image](https://github.com/user-attachments/assets/7c69ab9f-597b-40c3-85e2-01f8c408ac4d)
+| 인스타그램 화면       | ERD                                             | 
+|----------------|--------------------------------------------------------|
+| ![image](https://github.com/user-attachments/assets/0b685773-59c4-4506-81f0-ceb6cb03ffef) | ![image](https://github.com/user-attachments/assets/7c69ab9f-597b-40c3-85e2-01f8c408ac4d)|
 
 
 [ 기능분석 ]
@@ -463,62 +454,6 @@ e.g. 한 사용자가 여러 주문을 할 수 있는 경우
 ## 🪴 클래스 생성
 
 엔티티마다 클래스를 생성하고, 필요한 필드 추가
-
-### 🌱 Directory Architecture
-
-*src > main > java > com.ceos20.spring_boot*
-
-🗂️ user
-
-📁 domain
-
-- User.java
-- Follow.java
-
-📁 repository
-
-- UserRepository.java
-- FollowRespoitory.java
-
-🗂️ post
-
-📁 domain
-
-- Post.java
-- PostImage.java
-- PostLike.java
-- Scrap.java
-
-📁 repository
-
-- PostRepository.java
-- PostImageRepository.java
-- PostLikeRepository.java
-- ScrapRepository.java
-
-🗂️ comment
-
-📁 domain
-
-- Comment.java
-- CommentLike.java
-
-📁 repository
-
-- CommentRepository.java
-- CommentLike.java
-
-🗂️ dm
-
-📁 domain
-
-- DM.java
-- DMRoom.java
-
-📁 repository
-
-- DMRepository.java
-- DMRoomRepository.java
 
 ### 🌱 필드 구성 예시
 
