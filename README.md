@@ -1281,7 +1281,8 @@ Entity를 관리하는 EntityManager를 생성하는 공장
     때문에 여러 스레드가 동시에 사용해도 문제가 발생하지 않음 → Thread Safe
     
 
-![엔티티 매니저는 트랜젝션을 시작할 때, 커넥션을 획득함](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/1b2a881c-2927-4c47-b298-e1b0331a014c/image.png)
+![image](https://github.com/user-attachments/assets/ac3bc100-2b06-49e6-867c-85a993e6bf37)
+
 
 엔티티 매니저는 트랜젝션을 시작할 때, 커넥션을 획득함
 
@@ -1292,7 +1293,8 @@ Entity를 관리하는 EntityManager를 생성하는 공장
 - JPA를 이용하는데 가장 중요한 요소
 - 엔티티매니저는 엔티티를 영속성 컨텍스트에 보관하고 관리함
     
-    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/959a9a92-303f-431d-90ec-7aeafc96d56d/image.png)
+    ![image](https://github.com/user-attachments/assets/62d63bbe-7734-4a81-9566-097b05168526)
+
     
 
 **영속성 컨텍스트의 특징**
