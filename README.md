@@ -577,10 +577,7 @@ public class Comment {
 
 **Enum 타입**
 
-<aside>
-🤔
-
-**Enum 타입**
+🤔 **Enum 타입**
 
 열거형을 표현하는 데이터 타입. 고정된 상수 집합을 정의할 때 사용
 
@@ -594,7 +591,6 @@ public enum Season {
 Season currentSeason = Season.SPRING;
 ```
 
-</aside>
 
 - `@Enumerated(EnumType.String)`
     
@@ -605,16 +601,13 @@ Season currentSeason = Season.SPRING;
     Enum 값의 순서(index. 0부터 시작)을 데베에 저장
     
 
-<aside>
-⚠️
-
-`EnumType.ORDINAL` 사용 시 **Enum 값이 추가되거나 순서가 바뀔 때 문제가 발생할 수 있음**
+⚠️ `EnumType.ORDINAL` 사용 시 **Enum 값이 추가되거나 순서가 바뀔 때 문제가 발생할 수 있음**
 
 새로운 Enum 값이 중간에 추가되면 기존에 저장된 값들과 순서가 맞지 않게 돼서 데이터 무결성을 헤칠 수 있음
 
 → `EnumType.STRING` 사용 권장
 
-</aside>
+
 
 ## 🪴Repository
 
@@ -652,16 +645,14 @@ Season currentSeason = Season.SPRING;
             
     - 페이징 기능 자동 제공
         
-        <aside>
-        🤔
-        
-        **페이징 기능**
+       
+        🤔 **페이징 기능**
         
         한 번에 많은 데이터를 가져오는 대신 데이터를 일정한 크기로 잘라서 페이지 단위로 가져오는 기능
         
         Pageable 인터페이스와 함께 사용되며, 페이지 번호와 페이지 크기를 지정해서 쿼리의 결과를 나눠서 받을 수 있음
         
-        </aside>
+        
         
 
 ### 🌱 Entity Manager
