@@ -357,6 +357,108 @@ https://www.erdcloud.com/d/qF45tQoypstpAqQW3
 
 ![image](https://github.com/user-attachments/assets/145cb4c6-55ea-4425-9681-363bc7d14c15)
 
+## 🪴MySQL 연결
+
+```bash
+user@Seoahs-MacBook ~ % mysql -uroot -p
+Enter password: 
+mysql> show databases;
+mysql> CREATE DATABASE instagram;
+```
+
+```java
+	implementation 'mysql:mysql-connector-java:8.0.33'
+```
+
+## 🪴JPA
+
+### 🌱 JPA란
+
+Java Persistence API
+
+자바 진영의 ORM 기술 표준
+
+어플리케이션과 JDBC 사이에서 동작
+
+즉, 자바 객체를 데이터베이스 테이블에 저장하거나, 테이블 데이터를 자바 객체로 변환하는 작업을 자동으로 해주는 도구
+
+![image](https://github.com/user-attachments/assets/cb06ffa0-6f02-482c-9e4a-62687e69e4b9)
+
+
+### 🌱 JPA를 사용해야 하는 이유
+
+- 반복적/기본적 SQL을 JPA가 만들어 실행해줌
+- SQL과 데이터 중심의 설계 대신 객체 중심의 설계 가능 → 객체 지향적 개발 가능
+- DB 구조를 변경하거나 DB 종류를 바꾸는 것도 쉬워짐
+- 생산성을 높일 수 있고, 유지보수가 간편함
+
+### 🌱 JPA 사용하기
+
+1. build.gradle에 dependency 추가
+    
+    ```java
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    }
+    ```
+    
+2. application.yml에 JPA 설정 추가(MySQL 설정)
+    
+    ```java
+    spring:
+      datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: {JDBC URL}
+        username: {DATABASE USERNAME}
+        password: {DATABASE PASSWORD}
+      jpa:
+        database: mysql
+        database-platform: org.hibernate.dialect.MySQL8Dialect
+        hibernate:
+          ddl-auto: {OPTION}
+          show_sql: true
+        properties:
+          hibernate:
+            dialect: org.hibernate.dialect.MySQL8Dialect
+            database-platform: org.hibernate.dialect.MySQL8Dialect
+            format_sql: true
+    ```
+    
+    - **url**: jdbc:mysql://[ip주소]:[port]/DB이름
+    - **ddl-auto** options: `create` `create-drop` `update` `validate` `none`
+        - `create`: 엔티티 정보를 바탕으로 테이블도 직접 생성
+        - `update`: 애플리케이션이 실행될 때 기존 테이블 구조를 유지하면서, 엔티티 클래스의 변경 사항만 데이터베이스 테이블에 반영
+    - `show_sql` : hibernate가 DB에 날리는 모든 쿼리(DDL, DML)을 보여줌
+    - `format_sql` : 보여지는 쿼리를 예쁘게 포맷팅
+
+### 🌱 JPA Mapping
+
+**자바 객체와 데이터베이스 테이블을 서로 연결하는 과정**
+
+→ 이를 통해 자바 객체를 데이터베이스에 저장하거나, 반대로 데이터베이스에서 자바 객체로 데이터를 가져올 수 있음
+
+**Entity 매핑**
+
+자바 클래스에 `@Entity`를 붙여 데이터베이스의 테이블과 연결
+
+**필드 매핑**
+
+자바 클래스의 필드(변수)를 데베 테이블의 칼럼과 연결
+
+기본적으로 필드 이름과 컬럼 이름이 같으면 자동으로 매핑되지만, `@Column`을 사용해 컬럼 이름을 면시적으로 지정할 수도 있음
+
+```java
+@Column(name = "user_name")
+private String name; // 자바의 name 필드를 데이터베이스의 user_name 컬럼에 매핑
+```
+
+**관계 매핑**
+
+엔티티 간의 관계를 매핑
+
+`@OneToOne` `@OneToMany` `@ManyToMany`
+
+e.g. 한 사용자가 여러 주문을 할 수 있는 경우
 
 ## 🪴 클래스 생성
 
@@ -578,3 +680,71 @@ Season currentSeason = Season.SPRING;
 → `EnumType.STRING` 사용 권장
 
 </aside>
+
+## 🪴Repository
+
+**JpaRepository가 상속하는 Interface**
+
+- 형식: `<객체, ID Type>`
+    
+    ```java
+    @Repository
+    public interface MemberRepository extends JpaRepository<Member, Long>{
+    }
+    ```
+    
+- 스프링 데이터 JPA 제공 기능
+    - 인터페이스를 통한 기본적인 CRUD
+    - `findByName()` `findByEmail()`처럼 메서드 이름만으로 조회 기능 제공
+    - `in` 이나 `exist` `distinct` 조건도 사용 가능
+        - `in` : 특정 값이 지정된 값들 중 일치하는게 하나라도 있는지 확인
+            
+            ```java
+            List<User> findByAgeIn(List<Integer> ages);
+            ```
+            
+        - `exist` : 특정 조건을 만족하는 레코드가 존재하는지 확인
+            
+            ```java
+            boolean existsByEmail(String email);
+            ```
+            
+        - `distinct` : 중복된 결과를 제거하고 고유한 결과만 반환하도록 하는 것
+            
+            ```java
+            List<User> findDistinctByAge(int age);
+            ```
+            
+    - 페이징 기능 자동 제공
+        
+        <aside>
+        🤔
+        
+        **페이징 기능**
+        
+        한 번에 많은 데이터를 가져오는 대신 데이터를 일정한 크기로 잘라서 페이지 단위로 가져오는 기능
+        
+        Pageable 인터페이스와 함께 사용되며, 페이지 번호와 페이지 크기를 지정해서 쿼리의 결과를 나눠서 받을 수 있음
+        
+        </aside>
+        
+
+### 🌱 Entity Manager
+
+**엔티티 객체와 데이터베이스 간의 상호 작용을 관리하는 역할**
+
+![image](https://github.com/user-attachments/assets/799aef88-2931-40a3-aac7-f068229a1e21)
+
+
+### 🌱 영속성 컨텍스트
+
+**엔티티를 영구적으로 저장하는 환경**
+
+- `EntityManager.**persist**(entity);`
+    
+    DB에 저장하는 것이 아닌 영속성 컨텍스트를 통해 엔티티를 영속화한다는 것
+    
+    엔티티를 영속성 컨텍스트에 저장
+    
+- 논리적인 개념
+- 엔티티 매니저를 통해 영속성 컨텍스트에 접근. 1:1 관계
