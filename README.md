@@ -4,6 +4,8 @@ CEOS 20th BE study - instagram clone coding
 ## 목차
 <img width="929" alt="스크린샷 2024-09-30 오후 12 29 14" src="https://github.com/user-attachments/assets/2466c03b-536d-4951-b16e-5e70cb056547">
 <img width="934" alt="스크린샷 2024-09-30 오후 12 30 59" src="https://github.com/user-attachments/assets/89924a3b-9b60-4788-8ea3-365ebf0fb371">
+<img width="958" alt="스크린샷 2024-09-30 오후 6 01 48" src="https://github.com/user-attachments/assets/9ae931e6-8e37-466d-b92f-32a9fc9f6b87">
+
 
 
 
@@ -654,25 +656,891 @@ Season currentSeason = Season.SPRING;
         
         Pageable 인터페이스와 함께 사용되며, 페이지 번호와 페이지 크기를 지정해서 쿼리의 결과를 나눠서 받을 수 있음
         
-        
-        
 
-### 🌱 Entity Manager
+# 🌳 인스타그램 서비스 코드
 
-**엔티티 객체와 데이터베이스 간의 상호 작용을 관리하는 역할**
+## 🪴서비스 계층 코드
 
-![image](https://github.com/user-attachments/assets/799aef88-2931-40a3-aac7-f068229a1e21)
+소프트웨어 아키텍처 비즈니스 로직을 담당하는 계층
+
+Controller와 DAO(데이터 액세스 계층 or Repository)사이에서 중간 역할을 수행하며, 주로 애플리케이션의 주요 비즈니스 규칙과 처리를 수행
+
+### 🌱 Directory Architecure
+
+도메인형 패키지 구조로 구성
+
+![image](https://github.com/user-attachments/assets/ab693db7-54dc-4b45-b563-55f2479bdd72)
 
 
-### 🌱 영속성 컨텍스트
+![image](https://github.com/user-attachments/assets/5587819f-588a-4675-b67d-dd7820dddc76)
+
+
+### 🌱 서비스 코드의 기본구조
+
+
+💡 **MVC 패턴 (Model-View-Controller)**
+
+애플리케이션을 3가지 역할로 나눠 설계하는 구조를 의미
+
+1. **Model 클래스** 만들기
+    
+    핵심 데이터와 그 데이터를 처리하는 로직을 즉, 구조를 정의하는 클래스
+    
+    데이터 → 데이터베이스에 저장되는 객체(Entity)
+    
+    ```java
+    public class User {
+    	private Long id;
+    	private String name;
+    	private String email;
+    }
+    ```
+    
+2. Model 객체를 담는 **Repository 클래스** 구현하기
+    
+    Model 객체를 데이터베이스에 저장하거나 조회하는 역할
+    
+    즉, Model과 데이터베이스 사이에서 CRUD 작업을 처리하는 클래스
+    
+    스프링에서는 JpaRepository를 사용해 기본적인 데베 작업을 자동으로 처리할 수 있음
+    
+    ```java
+    import org.springframework.data.jpa.repository.JpaRepository;
+    
+    public interface UserRepository extends JpaRepository<User, Long> {
+    	User findByEmail(String email);
+    }
+    ```
+    
+3. Repository에 인덱싱하기 위한 **Service 클래스** 만들기
+    
+    비즈니스 로직을 처리하는 계층
+    
+    
+    🤔 **비즈니스 로직**
+    
+    애플리케이션의 핵심 기능을 처리하는 규칙이나 알고리즘
+    
+    사용자의 요청이 들어왔을 때 이를 어떻게 처리할지를 결정하는 단계
+    
+    e.g. 사용자가 회원가입을 할 때 이메일 중복 확인, 비밀번호 암호화 등
+    
+    
+    
+    주로 Repository를 통해 데이터를 가져오고 처리한 뒤 Controller에게 전달
+    
+    ```java
+    // 이메일로 사용자를 조회하거나 새 사용자를 생성하는 비즈니스 로직 처리
+    @Service
+    public class UserService {
+    
+        private final UserRepository userRepository;
+    
+        @Autowired
+        public UserService(UserRepository userRepository) {
+            this.userRepository = userRepository;
+        }
+    
+        public User getUserByEmail(String email) {
+            return userRepository.findByEmail(email);
+        }
+    
+        public User createUser(User user) {
+            return userRepository.save(user);
+        }
+    }
+    
+    ```
+    
+4. Service를 통해 Model이 담겨 있는 Repository에 접근하기 위한 **Controller 클래스**
+    
+    사용자의 요청을 받아서 처리하고, 그 결과를 반환하는 역할
+    
+    주로 웹 요청을 처리하는 계층으로, Service를 통해 필요한 데이터를 조회하고, 그 결과를 사용자에서 반환하는 역할
+    
+    HTTP 요청/응답을 처리하는 역할
+    
+    ```java
+    import org.springframework.web.bind.annotation.*;
+    
+    @RestController
+    @RequestMapping("/users")
+    public class UserController {
+    
+        private final UserService userService;
+    
+        @Autowired
+        public UserController(UserService userService) {
+            this.userService = userService;
+        }
+    
+        @GetMapping("/{email}")
+        public User getUserByEmail(@PathVariable String email) {
+            return userService.getUserByEmail(email);
+        }
+    
+        @PostMapping
+        public User createUser(@RequestBody User user) {
+            return userService.createUser(user);
+        }
+    }
+    ```
+    
+
+e.g. 사용자가 브라우저에서 *사용자 정보 조회* 요청을 보냄
+
+→ Controller는 그 요청을 받아 어떤 작업이 필요한지 결정한 후 Service로 요청 전달
+
+```java
+@GetMapping("/{email}")
+public User getUserByEmail(@PathVariable String email) {
+    return userService.getUserByEmail(email);  // Service 호출
+}
+```
+
+→ Service는 비즈니스 로직을 처리하면서 Repository를 호출해 데베에 해당 정보를 조회
+
+```java
+public User getUserByEmail(String email) {
+    // 1. 이메일 형식이 유효한지 검증하는 비즈니스 로직
+    if (!email.contains("@")) {
+        throw new IllegalArgumentException("Invalid email format");
+    }
+    
+    // 2. Repository를 통해 데이터베이스에서 사용자 정보를 조회
+    return userRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("User not found"));
+}
+```
+
+→ Repository는 Model 객체로 데이터를 반환
+
+요청된 이메일에 해당하는 사용자를 조회하는 작업
+
+```java
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);  // 이메일로 사용자 찾기
+}
+```
+
+→ 이를 Service가 받아 다시 Controller에 전달
+
+→ Controller는 그 데이터를 사용자에게 응답으로 반환
+
+
+
+**클래스 선언**
+
+`@Service` 로 서비스 클래스임을 선언하기
+
+**필드 주입**
+
+서비스 클래스는 Repository나 다른 서비스 클래스들을 의존성으로 가질 수 있음 → `@Autowired` 사용
+
+**비즈니스 로직 메서드**
+
+데이터를 가져와서 가공하거나, 데이터베이스에 저장하는 작업
+
+e.g. User
+
+**UserService.java**
+
+```java
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    // 회원가입
+    @Transactional
+    public User registerUser(User user) {
+        // 1. 만 14세 이상만 가입 가능
+        if (!isValidAge(user.getBirthday())){
+            throw new IllegalArgumentException("만 14세 이상만 가입이 가능합니다.");
+        }
+
+        // 2. 중복된 이름 허용 안함
+        if (userRepository.existsByName(user.getName())) {
+            throw new IllegalArgumentException("이미 해당 이름으로 가입된 사용자가 존재합니다.");
+        }
+
+        return userRepository.save(user);
+    }
+
+    // 만 14세 이상인지 확인
+    // 생년월일을 받아 나이가 14세 이상인지 확인하는 메서드
+    private boolean isValidAge(LocalDateTime birthday) {
+        LocalDate birthDate = birthday.toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+        int age = Period.between(birthDate, currentDate).getYears();
+        return age >= 14;
+    }
+
+    // 사용자 조회
+    @Transactional(readOnly = true)
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    }
+
+    // 사용자 삭제
+    @Transactional
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("User not found with id: " + userId);
+        }
+        userRepository.deleteById(userId);
+    }
+}
+```
+
+**UserRepository.java**
+
+```java
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+
+    // 특정 이름을 가진 사용자가 있는지 확인
+    boolean existsByName(String name);
+
+    // 특정 ID로 사용자 조회
+    Optional<User> findById(Long userId);
+}
+```
+
+## 🪴DTO (Data Transfer Object)
+
+**데이터를 묶어서 전달하기 위해 사용하는 객체**
+
+### 🌱 DTO의 역할
+
+- 계층 간(Controller-View, Controller-Service 등)의 데이터 전송을 담당
+- DTO는 단순히 데이터를 담기 위한 객체이므로 비즈니스 로직이 포함되지 않음
+- 엔티티 객체는 보통 데이터베이스와 직접적으로 매핑되는데, 이를 외부로 노출하면 보안에 문제가 발생할 수도 있음. 이를 방지하기 위해 DTO를 사용해 필요한 데이터만 전달할 수 있음
+
+
+🤔 **Entity vs DTO**
+
+Entity
+
+데이터베이스와 직접 매핑되는 객체 → 주로 데베와의 상호작용을 처리
+
+DTO
+
+순수하게 데이터 전송을 위한 객체
+
+엔티티에서 불필요한 정보를 제거하거나, 여러 엔티티의 데이터를 하나로 묶어서 전송할 수 있음
+
+
+
+
+🤔 **MVC에서 DTO 역할**
+
+View
+
+사용자가 보는 화면(UI)를 처리하는 역할
+
+DTO는 view와 cotroller 사이에서 주로 사용되며 view에 표시할 데이터만을 담아 전달함
+
+Controller
+
+view나 클라이언트에게 결과를 반환할 때 엔티티 객체를 그대로 반환하는 것이 아니라, DTO로 변환해서 반환하는 경우가 많음
+
+Service
+
+데베에서 가져 온 엔티티를 변환하여 DTO로 전달하거나, DTO 데이터를 받아 엔티티로 변환하는 작업을 수행
+
+
+
+### 🌱 DTO 구성
+
+- 전송에 필요한 정보만 포함
+    
+    비밀번호나 내부 ID등은 DTO에 포함시키지 않음
+    
+- 같은 엔티티라도 그때그때 필요한 정보가 다르면 여러 개의 DTO를 만드는게 좋음
+- 생성자, getter, setter, builder 패턴
+    
+    
+    🤔 **Builder 패턴**
+    
+    복잡한 객체를 쉽고 유연하게 만들도록 도와주는 설계 패턴
+    
+    생성자를 사용해 객체를 만들 때, 필드가 많으면 매개변수들의 순서나 의미를 헷갈리기 쉬움 + 몇몇 매개변수는 선택 사항일 수도 있음
+    
+    → Builder 패턴을 사용해 체이닝 방식으로 각 필드를 설정하고, 마지막에 한 번에 객체를 생성할 수 있음
+    
+    
+    🤔 **체이닝 방식**
+    
+    메서드 호출을 연속적으로 연결해 하나의 명령처럼 동작하게 하는 프로그래밍 기법
+    
+    
+    
+    ```java
+    public class User {
+        private String name;
+        private int age;
+        private String address;
+        private String email;
+    
+        // UserBuilder 클래스를 통해 객체를 생성
+        public static class Builder {
+            private String name;
+            private int age;
+            private String address;
+            private String email;
+    
+            public Builder name(String name) {
+                this.name = name;
+                return this;
+            }
+    
+            public Builder age(int age) {
+                this.age = age;
+                return this;
+            }
+    
+            public Builder address(String address) {
+                this.address = address;
+                return this;
+            }
+    
+            public Builder email(String email) {
+                this.email = email;
+                return this;
+            }
+    
+            // 빌드 메서드로 최종적으로 User 객체를 생성
+            public User build() {
+                return new User(this);
+            }
+        }
+    
+        // build() 메서드가 호출되면, 이걸 통해 빌더에 설정된 값들이 최종 User 객체에 설정되는 역할
+        private User(Builder builder) {
+            this.name = builder.name;
+            this.age = builder.age;
+            this.address = builder.address;
+            this.email = builder.email;
+        }
+    }
+    ```
+    
+    ```java
+    User user = new User.Builder()
+                   .name("Alice")
+                   .age(30)
+                   .address("123 Main St")
+                   .email("alice@example.com")
+                   .build();
+    ```
+    
+     
+    
+
+e.g. User
+
+**회원가입**
+
+- 팔로우/팔로워 수나 게시글 수는 회원가입 시 필요하지 않음
+    
+    → 기본 값 0으로 설정해놓음
+    
+
+UserCreateDTO.java
+
+```java
+public class UserCreateDTO {
+    @Getter
+    @Setter
+    private String name;
+    @Getter
+    @Setter
+    private String password;
+    @Getter
+    @Setter
+    private String gender;
+    @Getter
+    @Setter
+    private LocalDateTime birthday;
+    @Getter
+    @Setter
+    private String profileImage;
+
+    public UserCreateDTO() {}
+
+    public UserCreateDTO(String name, String password, String gender, LocalDateTime birthday, String profileImage) {
+        this.name = name;
+        this.password = password;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.profileImage = profileImage;
+    }
+
+}
+```
+
+UserDTO.java
+
+```java
+public class UserDTO {
+    @Getter
+    @Setter
+    private Long userId;
+    @Getter
+    @Setter
+    private String username;
+    @Getter
+    @Setter
+    private String password;
+    @Getter
+    @Setter
+    private String gender;
+    @Getter
+    @Setter
+    private LocalDateTime birthday;
+    @Getter
+    @Setter
+    private String profileImage;
+    @Getter
+    @Setter
+    private Long uploadPost;
+    @Getter
+    @Setter
+    private Long followNum;
+    @Getter
+    @Setter
+    private Long followingNum;
+
+    public UserDTO() {}
+
+    public UserDTO(Long userId, String username, String password, String gender, LocalDateTime birthday, String profileImage, Long uploadPost, Long followNum, Long followingNum) {
+        this.userId = userId;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.profileImage = profileImage;
+        this.uploadPost = uploadPost;
+        this.followNum = followNum;
+        this.followingNum = followingNum;
+    }
+
+}
+```
+
+UserService.java
+
+```java
+@Transactional
+    public UserDTO registerUser(UserCreateDTO userCreateDTO) {
+        // 1. 만 14세 이상만 가입 가능
+        if (!isValidAge(userCreateDTO.getBirthday())){
+            throw new IllegalArgumentException("만 14세 이상만 가입이 가능합니다.");
+        }
+
+        // 2. 중복된 이름 허용 안함
+        if (userRepository.existsByName(userCreateDTO.getName())) {
+            throw new IllegalArgumentException("이미 해당 이름으로 가입된 사용자가 존재합니다.");
+        }
+
+        // DTO -> 엔티티 변환
+        User user = User.builder()
+                .name(userCreateDTO.getName())
+                .password(userCreateDTO.getPassword())
+                .gender(userCreateDTO.getGender())
+                .birthday(userCreateDTO.getBirthday())
+                .profileImage(userCreateDTO.getProfileImage())
+                .uploadPost(0L) //기본값 설정
+                .followerNum(0L)
+                .followingNum(0L)
+                .build();
+
+        // 저장 후 UserDTO 반환
+        User savedUser = userRepository.save(user);
+        return new UserDTO(
+            savedUser.getUserId(),        // 자동 생성된 userId
+            savedUser.getName(),
+            savedUser.getPassword(),
+            savedUser.getGender(),
+            savedUser.getBirthday(),
+            savedUser.getProfileImage(),
+            savedUser.getUploadPost(),
+            savedUser.getFollowerNum(),
+            savedUser.getFollowingNum()
+        );
+    }
+```
+
+**회원 조회**
+
+- password나 gender는 필요없을 것 같아서 뺌
+
+UserProfileDTO.java
+
+```java
+public class UserProfileDTO {
+
+    @Getter
+    @Setter
+    private Long userId;
+    @Getter
+    @Setter
+    private String name;
+    @Getter
+    @Setter
+    private String profileImage;
+    @Getter
+    @Setter
+    private Long uploadPost;
+    @Getter
+    @Setter
+    private Long followerNum;
+    @Getter
+    @Setter
+    private Long followingNum;
+
+    // 기본 생성자
+    public UserProfileDTO() {}
+
+    // 모든 필드를 포함하는 생성자
+    public UserProfileDTO(Long userId, String name, String profileImage, Long uploadPost, Long followerNum, Long followingNum) {
+        this.userId = userId;
+        this.name = name;
+        this.profileImage = profileImage;
+        this.uploadPost = uploadPost;
+        this.followerNum = followerNum;
+        this.followingNum = followingNum;
+    }
+
+}
+```
+
+UserService.java
+
+```java
+@Transactional(readOnly = true)
+    public UserProfileDTO getUserById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()->new RuntimeException("User Not Found"));
+
+        // User 엔티티를 UserDTO로 변환하여 반환
+        return new UserProfileDTO(
+                user.getUserId(),
+                user.getName(),
+                user.getProfileImage(),
+                user.getUploadPost(),
+                user.getFollowerNum(),
+                user.getFollowingNum()
+        );
+    }
+```
+
+**회원 삭제**
+
+- 식별자 `user_id` 만 있으면 삭제할 수 있으므로 DTO 안 만들어줌
+
+# 🌳 영속성 컨텍스트
+
+**JPA에서 엔티티 객체들을 관리하는 일종의 저장소 또는 캐시**
+
+즉, 데이터베이스에 저장된 데이터와 자바 애플리케이션의 엔티티 객체 사이의 중간 다리 역할
+
+### 🌱 EntityManagerFactory, EntityManager
+
+**Entity**
+
+RDB의 테이블과 매핑되는 객체
+
+**EntityManager**
+
+Entity를 저장하고, 수정하고, 삭제하고, 조회하는(CRUD) 등 Entity와 관련된 모든 일을 처리하는 것
+
+- 데이터베이스와 연결된 영속성 컨텍스트를 관리하는 객체
+- 상태를 가짐 e.g. 데베에서 조회한 엔티티를 메모리에 저장하고, 트랜젝션이 끝날 때 그 데이터를 데베에 반영
+- 하나의 트랜젝션 동안 영속성 컨텍스트에 저장된 엔티티들을 관리
+    
+    만약 여러 스레드가 하나의 EntityManager를 공유해서 동시에 작업 → 각 스레드가 서로 다른 엔티티를 다루거나, 같은 엔티티의 상태를 동시에 변경하려고 할 때, 충돌이 발생할 수 있음
+    
+    따라서 EntityManager는 각 스레드가 독립적으로 사용해야하고, Thread Safe 하지 않다고 말할 수 있음
+    
+
+**EntityManagerFactory**
+
+Entity를 관리하는 EntityManager를 생성하는 공장
+
+- 하나만 만들어져서 애플리케이션 전체에서 사용됨
+- stateless → 내부에 어떤 상태나 데이터를 가지고 있지 않음
+    
+    때문에 여러 스레드가 동시에 사용해도 문제가 발생하지 않음 → Thread Safe
+    
+
+![엔티티 매니저는 트랜젝션을 시작할 때, 커넥션을 획득함](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/1b2a881c-2927-4c47-b298-e1b0331a014c/image.png)
+
+엔티티 매니저는 트랜젝션을 시작할 때, 커넥션을 획득함
+
+### 🌱 영속성 컨텍스트
 
 **엔티티를 영구적으로 저장하는 환경**
 
-- `EntityManager.**persist**(entity);`
+- JPA를 이용하는데 가장 중요한 요소
+- 엔티티매니저는 엔티티를 영속성 컨텍스트에 보관하고 관리함
     
-    DB에 저장하는 것이 아닌 영속성 컨텍스트를 통해 엔티티를 영속화한다는 것
+    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/d6cd7a95-d578-4984-bc27-c7e8cb6ebb02/959a9a92-303f-431d-90ec-7aeafc96d56d/image.png)
     
-    엔티티를 영속성 컨텍스트에 저장
+
+**영속성 컨텍스트의 특징**
+
+- 영속성 컨텍스트와 식별자 값
     
-- 논리적인 개념
-- 엔티티 매니저를 통해 영속성 컨텍스트에 접근. 1:1 관계
+    영속성 컨텍스트 안에서 관리되는 엔티티는 식별자 값을 반드시 가져야 함
+    
+    → key-value로 엔티티를 관리하기 때문
+    
+- 영속성 컨텍스트와 데이터 베이스 저장
+    
+    영속성 컨텍스트에는 DB에서 가져온 엔티티들이 메모리에 저장됨
+    
+    → 엔티티를 수정하면 수정 사항은 일단 메모리에 남아 있고, 바로 DB에 반영되지는 않음
+    
+    → flush를 호출하면 메모리에 있는 변경 사항들이 DB에 반영됨
+    
+    → 아직 트랜젝션은 끝나지 않았음. 반영된 데이터 나중에 롤백 가능
+    
+    
+    🤔 **FLUSH**
+    
+    JPA에서 최적화를 위해 엔티티의 변경 사항을 바로바로 DB에 반영하지 않고, 필요할 때 한꺼번에 반영
+    
+    flush가 발생하는 3가지 경우
+    
+    1. `transaction.commit()`
+    2. `entityManager.flush()`
+    3. JPQL 쿼리 실행 전
+    
+    e.g
+    
+    1. 변경: `entity.setName("New Name");`
+        
+        엔티티 객체의 이름을 변경했지만, 아직 DB에는 반영되지 않음
+        
+    2. flush 호출: `em.flush();`
+        
+        메모리에 있던 변경된 이름이 DB에 저장
+        
+    3. 트랜젝션 커밋: `em.getTransaction().commit();`
+        
+        트랜젝션이 커밋되면서 변경이 확정
+        
+        롤백으로 flush된 내용도 되돌릴 수 있긴 함
+        
+   
+    
+
+영속성 컨텍스트가 엔티티를 관리함으로 얻는 이점
+
+- 1차 캐시
+    
+    영속성 컨텍스트 내부에서 엔티티를 보관하는 저장소
+    
+    1. 데이터 조회 시 1차 캐시에 이미 있는지 확인하고, 데이터가 있으면 가져옴
+    2. 1차 캐시에 데이터가 없으면, DB에 데이터를 요청
+    3. DB에서 받은 데이터를 다음에 재사용할 수 있도록 1차 캐시에 저장
+    
+    ⇒ DB에서 조회하는 횟수를 줄여, 성능상 이점을 가져올 수 있음
+    
+- 같은 엔티티에 대해 객체 동일성 보장 by 1차 캐시
+    
+    불필요한 중복을 방지해주고, 변경 사항을 일관성 있게 관리할 수 있도록 함
+    
+- 트랙잭션을 지원하는 쓰기 지연
+    
+    쓰기 지연: 영속성 컨텍스트에서 바로 DB로 쿼리를 보내지 않고 SQL 쿼리를 쓰기 지연 저장소에 모아놨다가, 영속성 컨텍스트가 flush 하는 시점에 모아둔 SQL 쿼리를 데이터베이스로 보내는 기능
+    
+    1차 캐시에 저장하는 persist 명령어를 사용하면, 쓰기 지연 SQL 저장소에 query문을 임시로 저장
+    
+- 변경 감지
+    1. 1차 캐시에 저장될 때 최초 저장 시점의 SnapShot을 저장
+    2. commit을 하면 엔티티와 스냅샷을 비교
+    3. 변경을 감지하면 UPDATE 쿼리를 쓰기 지연 SQL 저장소에 생성하고, commit되기 전 내부적으로 flush가 호출이 되어 변경된 사항이 DB에 반영
+
+### 🌱 엔티티 생명주기
+
+![image](https://github.com/user-attachments/assets/eaca30e0-0f00-4014-9385-48eb7c33bc4e)
+
+
+**비영속 (new / transient)**
+
+영속성 컨텍스트와 전혀 관계가 없는 상태
+
+```java
+Customer customer = new Customer(); 
+customer.setId(1L);
+customer.setFirstName("ceos");
+customer.setLastName("kim");
+```
+
+**영속 (managed)**
+
+영속성 컨텍스트에 저장된 상태
+
+```java
+em.persist(customer);
+```
+
+**준영속 (detached)**
+
+영속성 컨텍스트에 저장되었다가 분리된 상태
+
+```java
+// 영속 상태의 customer 객체(엔티티)를 영속성 컨텍스트에서 분리
+em.detach(customer);
+
+// 영속 상태의 모든 객체를 영속성 컨텍스트에서 분리
+em.clear();
+
+// 영속성 컨텍스트를 종료
+em.close();
+```
+
+**삭제 (removed)**
+
+삭제된 상태
+
+```java
+// customer 엔티티를 영속성 컨텍스트에서 분리하고, DB에서도 삭제한다.
+em.remove(customer);
+```
+
+### 🌱 트랜잭션 범위의 영속성 컨텍스트
+
+**스프링 컨테이너는 트랜잭션 범위의 영속성 컨텍스트 전략을 기본으로 사용**
+
+→ 트랜잭션이 없는 프레젠테이션 계층(controller)에서의 엔티티는 준영속 상태이므로 변경 감지, 지연 로딩 등이 동작하지 않음
+
+![image](https://github.com/user-attachments/assets/bafac4da-93e5-428c-bc63-a8a95032b3c0)
+
+
+# 🌳 N + 1 문제
+
+## 🪴 로딩 전략
+
+### 🌱 즉시로딩 (Eager Loading)
+
+연관관계가 있는 엔티티를 데이터베이스에서 즉시 로드해 메인 엔티티와 함께 로드
+
+- `@XToOne` 연관관계 → 즉시로딩이 디폴트
+- 즉시로딩을 사용하면 연관된 모든 엔티티를 즉시 로드하기 때문에 성능 문제가 발생할 수 있음
+    
+    → 모든 연관관계는 지연로딩으로 설정하는 것이 좋음
+    
+    b/c N+1 문제
+    
+
+### 🌱 지연 로딩 (Lazy Loading)
+
+연관된 엔티티가 실제로 필요할 때까지 DB에서 로드를 지연시킴
+
+- `@OneToMany` `@ManyToMany` 연관관계 → 지연로딩이 디폴트
+- 필요한 경우에만 연관된 엔티티를 로드하기 때문에 성능을 최적화할 수 있음
+
+## 🪴  N +  1 문제
+
+**N개의 객체를 조회할 때 하나의 쿼리가 나가고, 이때 조회한 N개의 객체에 연관된 객체를 조회하기 위해 N개의 쿼리가 추가적으로 나가는 문제**
+
+→ 불필요하게 많은 쿼리가 실행되어 성능이 저하되는 것
+
+e.g. Order와 연관된 Customer를 지연 로딩으로 설정했을 경우
+
+→ Order에 연관된 Customer를 조회할 때마다 N번의 추가 쿼리가 발생
+
+```java
+List<Order> orders = em.createQuery("SELECT o FROM Order o", Order.class).getResultList();  // 1개의 쿼리 실행
+for (Order order : orders) {
+    Customer customer = order.getCustomer();  // N개의 추가 쿼리 발생 (각 Order마다 Customer 조회)
+}
+```
+
+### 🌱 해결방법: Fetch Join
+
+**한 번의 쿼리로 연관된 엔티티를 모두 가져오게 함**
+
+e.g.
+
+```java
+List<Order> orders = em.createQuery(
+    "SELECT o FROM Order o JOIN FETCH o.customer", Order.class
+).getResultList();  // 1번의 쿼리로 Order와 Customer를 모두 조회
+```
+
+### 🌱 해결방법: Entity Graph
+
+**특정 엔티티를 어떻게 로딩할지 지정하는 방법**
+
+엔티티의 특정 연관 필드를 명시적으로 즉시로딩하도록 설정할 수 있음
+
+e.g. Order에서 Customer와 Product가 지연 로딩으로 적용됨
+
+```java
+@Entity
+public class Order {
+    @Id
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // 기본적으로 지연 로딩
+    private Customer customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)  // 기본적으로 지연 로딩
+    private Product product;
+}
+```
+
+Customer만 즉시로딩 하고 싶을 때
+
+1. Entity Graph 정의
+    
+    ```java
+    @Entity
+    @NamedEntityGraph(
+        name = "Order.withCustomer",    // 그래프 이름
+        attributeNodes = @NamedAttributeNode("customer")  // 'customer'를 즉시 로딩
+    )
+    public class Order {
+        @Id
+        private Long id;
+    
+        @ManyToOne(fetch = FetchType.LAZY)
+        private Customer customer;
+    
+        @ManyToOne(fetch = FetchType.LAZY)
+        private Product product;
+    }
+    ```
+    
+2. Entity Graph 적용
+    1. EntityManager로 조회
+        
+        ```java
+        EntityGraph<?> entityGraph = em.getEntityGraph("Order.withCustomer");
+        Map<String, Object> hints = new HashMap<>();
+        hints.put("javax.persistence.fetchgraph", entityGraph);
+        
+        Order order = em.find(Order.class, 1L, hints);  // Customer는 즉시 로딩, Product는 지연 로딩
+        ```
+        
+    
+    b. Spring Data JPA로 조회
+    
+    ```java
+    public interface OrderRepository extends JpaRepository<Order, Long> {
+        
+        @EntityGraph(value = "Order.withCustomer", type = EntityGraph.EntityGraphType.FETCH)
+        List<Order> findAll();
+    }
+    ```
