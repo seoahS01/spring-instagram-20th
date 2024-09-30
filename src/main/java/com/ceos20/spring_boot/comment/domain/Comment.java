@@ -32,13 +32,11 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id")
-    private Comment parentComment;
+    private Comment parentCommentId;
 
-    @Column(name = "post_id2")
-    private Long postId2;
 
 }

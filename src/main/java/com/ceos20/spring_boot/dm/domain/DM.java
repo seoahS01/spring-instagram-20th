@@ -32,17 +32,17 @@ public class DM {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ref_dm_id")
-    private DM refDM;  // 언급된 DM과의 관계
+    private DM refDMId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;  // 보낸 사용자
+    private User senderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;  // 받는 사용자
+    private User receiverId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dm_room_id", nullable = false)
-    private DMRoom dmRoom;  // DM이 속한 DM 방
+    private DMRoom dmRoomId;
 }

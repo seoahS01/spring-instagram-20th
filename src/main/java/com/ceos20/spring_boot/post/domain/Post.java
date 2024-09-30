@@ -31,6 +31,6 @@ public class Post {
     private int commentNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id2")
-    private User user;
+    @JoinColumn(name = "user_id")
+    private User userId;
 }

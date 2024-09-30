@@ -25,6 +25,4 @@ public class Scrap {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "post_id2")
-    private Long postId2;
 }

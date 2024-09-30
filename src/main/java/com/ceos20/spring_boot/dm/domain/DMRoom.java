@@ -18,13 +18,13 @@ public class DMRoom {
     private Long dmRoomId;
 
     @Column(name = "not_read_dm_num", nullable = false)
-    private int notReadDMNum;  // 읽지 않은 메시지 수
+    private int notReadDMNum;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_1", nullable = false)
-    private User user1;  // DM 방의 첫 번째 사용자
+    private User userId_1;  // DM 방의 첫 번째 사용자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_2", nullable = false)
-    private User user2;  // DM 방의 두 번째 사용자
+    private User userId_2;  // DM 방의 두 번째 사용자
 }
