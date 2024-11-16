@@ -1,14 +1,6 @@
 # spring-instagram-20th
 CEOS 20th BE study - instagram clone coding
 
-## 목차
-<img width="929" alt="스크린샷 2024-09-30 오후 12 29 14" src="https://github.com/user-attachments/assets/2466c03b-536d-4951-b16e-5e70cb056547">
-<img width="934" alt="스크린샷 2024-09-30 오후 12 30 59" src="https://github.com/user-attachments/assets/89924a3b-9b60-4788-8ea3-365ebf0fb371">
-<img width="958" alt="스크린샷 2024-09-30 오후 6 01 48" src="https://github.com/user-attachments/assets/9ae931e6-8e37-466d-b92f-32a9fc9f6b87">
-
-
-
-
 ## 🪴 데이터 모델링 개념 공부
 
 ### 🌱 데이터 모델링
